@@ -9,7 +9,7 @@ def create_log_entry(name, ref_range, directory)
   {
     name: name,
     ref_range: ref_range,
-    log: Dir.chdir(directory) { `git log #{ref_range} 2>&1` },
+    log: Dir.chdir(directory) { `git log #{ref_range} --graph --format=format:'%h - (%ad) %s <%an>' --date short 2>&1` },
   }
 end
 # ------------
