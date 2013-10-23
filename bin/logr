@@ -5,7 +5,7 @@ ref_range = ARGV.shift
 # ------------
 
 # Generate a named change entry for a ref_range in a directory
-def create_change_entry(name, ref_range, directory)
+def create_log_entry(name, ref_range, directory)
   {
     name: name,
     ref_range: ref_range,
@@ -34,10 +34,10 @@ known_gem_locations = File.open(config_path) do |file|
 end
 # ------------
 
-changes = []
+logs = []
 
 # Create change entry for the target application (in the current working directory)
-changes << create_change_entry(File.basename(Dir.pwd), ref_range, Dir.pwd)
+logs << create_log_entry(File.basename(Dir.pwd), ref_range, Dir.pwd)
 # ------------
 
 # Find any updated gems
@@ -54,12 +54,12 @@ end
 updated_gems
   .keep_if { |key, _| known_gem_locations.has_key?(key) }
   .each do |name, changes|
-    changes << create_change_entry(name, "v#{changes['-']}..v#{changes['+']}", known_gem_locations[name])
+    logs << create_log_entry(name, "v#{changes['-']}..v#{changes['+']}", known_gem_locations[name])
   end
 # ------------
 
 # Output
-changes.each do |log|
+logs.each do |log|
   puts '================================================================================'
   puts "# #{log[:name]} (#{log[:ref_range]})"
   puts '--------------------------------------------------------------------------------'
