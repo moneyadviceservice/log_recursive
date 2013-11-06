@@ -2,14 +2,16 @@
 
 # Parse arguments
 ref_range = ARGV.shift
+format = ARGV.shift || '--graph --format=format:"%h - (%ad) %s <%an>" --date short'
 # ------------
 
+
 # Generate a named change entry for a ref_range in a directory
-def create_log_entry(name, ref_range, directory)
+def create_log_entry(name, ref_range, directory, format)
   {
     name: name,
     ref_range: ref_range,
-    log: Dir.chdir(directory) { `git log #{ref_range} --graph --format=format:'%h - (%ad) %s <%an>' --date short 2>&1` },
+    log: Dir.chdir(directory) { `git log #{ref_range} #{format} 2>&1` },
   }
 end
 # ------------
@@ -37,7 +39,7 @@ end
 logs = []
 
 # Create change entry for the target application (in the current working directory)
-logs << create_log_entry(File.basename(Dir.pwd), ref_range, Dir.pwd)
+logs << create_log_entry(File.basename(Dir.pwd), ref_range, Dir.pwd, format)
 # ------------
 
 # Find any updated gems
@@ -54,7 +56,7 @@ end
 updated_gems
   .keep_if { |key, _| known_gem_locations.has_key?(key) }
   .each do |name, changes|
-    logs << create_log_entry(name, "v#{changes['-']}..v#{changes['+']}", known_gem_locations[name])
+    logs << create_log_entry(name, "v#{changes['-']}..v#{changes['+']}", known_gem_locations[name], format)
   end
 # ------------
 
