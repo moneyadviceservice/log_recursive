@@ -17,6 +17,16 @@ module LogRecursive
       end
     end
 
+    def output
+      logs.each do |log|
+        puts '================================================================================'
+        puts "# #{log[:name]} (#{log[:ref_range]})"
+        puts '--------------------------------------------------------------------------------'
+        puts log[:log]
+        puts
+      end
+    end
+
     private
 
     attr_reader :changes

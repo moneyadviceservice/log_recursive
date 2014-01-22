@@ -22,15 +22,9 @@ updated_gems = LogRecursive::ChangeList.new(ref_range).known_changes
 # ------------
 
 # Create change entries for any known gems
-logs = LogRecursive::Logs.new(updated_gems).logs
+logs = LogRecursive::Logs.new(updated_gems)
 # ------------
 
 # Output
-logs.each do |log|
-  puts '================================================================================'
-  puts "# #{log[:name]} (#{log[:ref_range]})"
-  puts '--------------------------------------------------------------------------------'
-  puts log[:log]
-  puts
-end
+logs.output
 # ------------
