@@ -9,7 +9,7 @@ module LogRecursive
       raw_git_changes.scan(/^(\-|\+)\s+([a-z_\-]+)\s+\(([\da-z\.]+)\)$/i).each do |match|
         # 0 = direction, 1 = gem name, 2 = version
         hash[match[1]] ||= {}
-        hash[match[1]].store(match[0], match[2])
+        hash[match[1]].store(match[0], "v#{match[2]}")
       end
       hash
     end

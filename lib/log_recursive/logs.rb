@@ -6,7 +6,7 @@ module LogRecursive
 
     def logs
       changes.map do |name, keys|
-        ref_range = "v#{keys['-']}..v#{keys['+']}"
+        ref_range = "#{keys['-']}..#{keys['+']}"
         directory = config.known_gems[name]
 
         { name: name,

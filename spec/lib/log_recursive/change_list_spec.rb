@@ -8,7 +8,7 @@ describe LogRecursive::ChangeList do
 
     it 'returns nested hash { name: { direction: version, direction: version }' do
       Dir.chdir("spec/fixtures/fake_git_repo") do
-        subject.changes.should == {"log_recursive"=>{"-"=>"0.0.1.2", "+"=>"0.0.1.3"}}
+        subject.changes.should == {"log_recursive"=>{"-"=>"v0.0.1.2", "+"=>"v0.0.1.3"}}
       end
     end
   end
@@ -20,7 +20,7 @@ describe LogRecursive::ChangeList do
 
     it 'returns nested hash { name: { direction: version, direction: version }' do
       Dir.chdir("spec/fixtures/fake_git_repo") do
-        subject.known_changes.should == {"log_recursive"=>{"-"=>"0.0.1.2", "+"=>"0.0.1.3"}}
+        subject.known_changes.should == {"log_recursive"=>{"-"=>"v0.0.1.2", "+"=>"v0.0.1.3"}}
       end
     end
   end
