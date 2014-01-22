@@ -28,13 +28,7 @@ logs << create_log_entry(File.basename(Dir.pwd), ref_range, Dir.pwd, format)
 # ------------
 
 # Find any updated gems
-updated_gems = {}
-lock_file_changes = `git diff --no-color #{ref_range} -- Gemfile.lock`
-lock_file_changes.scan(/^(\-|\+)\s+([a-z_\-]+)\s+\(([\da-z\.]+)\)$/i).each do |match|
-  # 0 = direction, 1 = gem name, 2 = version
-  updated_gems[match[1]] ||= {}
-  updated_gems[match[1]].store(match[0], match[2])
-end
+updated_gems = LogRecursive::ChangeList.new(ref_range).changes
 # ------------
 
 # Create change entries for any known gems
