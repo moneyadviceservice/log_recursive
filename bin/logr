@@ -7,24 +7,7 @@ ref_range = ARGV.shift
 format = ARGV.shift || '--graph --format=format:"%h - (%ad) %s <%an>" --date=short'
 # ------------
 
-
-# Generate a named change entry for a ref_range in a directory
-# ------------
-
 config = LogRecursive::Config.new
-known_gem_locations = config.known_gems
-
-# Create change entry for the target application (in the current working directory)
-# ------------
-
-# Find any updated gems
 updated_gems = LogRecursive::ChangeList.new(ref_range).known_changes
-# ------------
-
-# Create change entries for any known gems
 logs = LogRecursive::Logs.new(updated_gems)
-# ------------
-
-# Output
 logs.output
-# ------------
