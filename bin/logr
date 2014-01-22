@@ -2,12 +2,9 @@
 
 require 'log_recursive'
 
-# Parse arguments
 ref_range = ARGV.shift
 format = ARGV.shift || '--graph --format=format:"%h - (%ad) %s <%an>" --date=short'
-# ------------
 
-config = LogRecursive::Config.new
 updated_gems = LogRecursive::ChangeList.new(ref_range).known_changes
 logs = LogRecursive::Logs.new(updated_gems)
 logs.output
