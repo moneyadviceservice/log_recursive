@@ -28,12 +28,11 @@ logs << create_log_entry(File.basename(Dir.pwd), ref_range, Dir.pwd, format)
 # ------------
 
 # Find any updated gems
-updated_gems = LogRecursive::ChangeList.new(ref_range).changes
+updated_gems = LogRecursive::ChangeList.new(ref_range).known_changes
 # ------------
 
 # Create change entries for any known gems
 updated_gems
-  .keep_if { |key, _| known_gem_locations.has_key?(key) }
   .each do |name, changes|
     logs << create_log_entry(name, "v#{changes['-']}..v#{changes['+']}", known_gem_locations[name], format)
   end

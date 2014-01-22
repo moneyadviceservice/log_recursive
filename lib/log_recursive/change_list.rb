@@ -14,7 +14,16 @@ module LogRecursive
       hash
     end
 
+    def known_changes
+      changes.select{|k,_| config.known_gems.has_key?(k)}
+    end
+
     private
+
+    # TODO dirty, should be injected or lookup
+    def config
+      LogRecursive::Config.new
+    end
 
     def ref_range
       @ref_range
