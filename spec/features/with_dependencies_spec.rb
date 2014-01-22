@@ -7,5 +7,12 @@ describe 'Output' do
     it 'outputs multiple project banners' do
       lines.select{|l| l == "="*80}.size.should == 2
     end
+
+    it 'outputs most recent change of dependency' do
+      lines[8].should include('4225aa8')
+      lines[8].should include('2013-10-22')
+      lines[8].should include("Remove commander dependency, as it's not used")
+      lines[8].should include('Gareth Visagie')
+    end
   end
 end
