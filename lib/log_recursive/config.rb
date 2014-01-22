@@ -1,3 +1,5 @@
+require 'pathname'
+
 module LogRecursive
   class Config
     def initialize(path = nil)
