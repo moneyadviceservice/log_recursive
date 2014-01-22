@@ -1,71 +1,10 @@
 #!/usr/bin/env ruby
 
-# Parse arguments
+require 'log_recursive'
+
 ref_range = ARGV.shift
 format = ARGV.shift || '--graph --format=format:"%h - (%ad) %s <%an>" --date=short'
-# ------------
 
-
-# Generate a named change entry for a ref_range in a directory
-def create_log_entry(name, ref_range, directory, format)
-  {
-    name: name,
-    ref_range: ref_range,
-    log: Dir.chdir(directory) { `git log #{ref_range} #{format} 2>&1` },
-  }
-end
-# ------------
-
-# Find config file
-config_path = nil
-dir = '.'
-while config_path == nil && File.expand_path(dir) != '/' do
-    potential_config_path = File.expand_path('.logr', dir)
-    config_path = potential_config_path if File.exists?(potential_config_path)
-    dir = File.join(dir, '..')
-end
-
-raise "Could not find config, do you have a .logr file somewhere in the directory hierarchy?" unless config_path
-# ------------
-
-# Resolve known gems
-known_gem_locations = File.open(config_path) do |file|
-  Hash[
-    file.lines.map { |line| line.strip.split('=', 2) }
-  ]
-end
-# ------------
-
-logs = []
-
-# Create change entry for the target application (in the current working directory)
-logs << create_log_entry(File.basename(Dir.pwd), ref_range, Dir.pwd, format)
-# ------------
-
-# Find any updated gems
-updated_gems = {}
-lock_file_changes = `git diff --no-color #{ref_range} -- Gemfile.lock`
-lock_file_changes.scan(/^(\-|\+)\s+([a-z_\-]+)\s+\(([\da-z\.]+)\)$/i).each do |match|
-  # 0 = direction, 1 = gem name, 2 = version
-  updated_gems[match[1]] ||= {}
-  updated_gems[match[1]].store(match[0], match[2])
-end
-# ------------
-
-# Create change entries for any known gems
-updated_gems
-  .keep_if { |key, _| known_gem_locations.has_key?(key) }
-  .each do |name, changes|
-    logs << create_log_entry(name, "v#{changes['-']}..v#{changes['+']}", known_gem_locations[name], format)
-  end
-# ------------
-
-# Output
-logs.each do |log|
-  puts '================================================================================'
-  puts "# #{log[:name]} (#{log[:ref_range]})"
-  puts '--------------------------------------------------------------------------------'
-  puts log[:log]
-  puts
-end
-# ------------
+updated_gems = LogRecursive::ChangeList.new(ref_range).known_changes
+logs = LogRecursive::Logs.new(updated_gems)
+logs.output
