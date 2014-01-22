@@ -7,14 +7,18 @@ module LogRecursive
     end
 
     def known_gems
-      File.open(config_path) do |file|
+      self_gem.merge(File.open(config_path) do |file|
         Hash[
           file.lines.map { |line| line.strip.split('=', 2) }
         ]
-      end
+      end)
     end
 
     private
+
+    def self_gem
+      { Pathname.new(Dir.pwd).basename.to_s => "." }
+    end
 
     def config_path
       path.join(".logr")

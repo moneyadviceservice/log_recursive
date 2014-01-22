@@ -13,19 +13,19 @@ describe LogRecursive::Logs do
     end
 
     it 'stores names' do
-      logs.map{|l| l[:name]}.should == ["log_recursive"]
+      logs.last[:name].should == "log_recursive"
     end
 
     it 'stores ref_range' do
-      logs.map{|l| l[:ref_range]}.should == ["v0.0.1.2..v0.0.1.3"]
+      logs.last[:ref_range].should == "v0.0.1.2..v0.0.1.3"
     end
 
     it 'stores the directory' do
-      logs.map{|l| l[:directory]}.should == ["../../.."]
+      logs.last[:directory].should == "../../.."
     end
 
     it 'stores the log' do
-      logs.map{|l| l[:log]}.should == ["* 4225aa8 - (2013-10-22) Remove commander dependency, as it's not used <Gareth Visagie>"]
+      logs.last[:log].should == "* 4225aa8 - (2013-10-22) Remove commander dependency, as it's not used <Gareth Visagie>"
     end
   end
 end

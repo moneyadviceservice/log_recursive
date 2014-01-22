@@ -9,22 +9,12 @@ format = ARGV.shift || '--graph --format=format:"%h - (%ad) %s <%an>" --date=sho
 
 
 # Generate a named change entry for a ref_range in a directory
-def create_log_entry(name, ref_range, directory, format)
-  {
-    name: name,
-    ref_range: ref_range,
-    log: Dir.chdir(directory) { `git log #{ref_range} #{format} 2>&1` },
-  }
-end
 # ------------
 
 config = LogRecursive::Config.new
 known_gem_locations = config.known_gems
 
-logs = []
-
 # Create change entry for the target application (in the current working directory)
-logs << create_log_entry(File.basename(Dir.pwd), ref_range, Dir.pwd, format)
 # ------------
 
 # Find any updated gems
@@ -32,7 +22,7 @@ updated_gems = LogRecursive::ChangeList.new(ref_range).known_changes
 # ------------
 
 # Create change entries for any known gems
-logs += LogRecursive::Logs.new(updated_gems).logs
+logs = LogRecursive::Logs.new(updated_gems).logs
 # ------------
 
 # Output
