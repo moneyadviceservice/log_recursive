@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'log_recursive'
+
 # Parse arguments
 ref_range = ARGV.shift
 format = ARGV.shift || '--graph --format=format:"%h - (%ad) %s <%an>" --date=short'
@@ -16,25 +18,8 @@ def create_log_entry(name, ref_range, directory, format)
 end
 # ------------
 
-# Find config file
-config_path = nil
-dir = '.'
-while config_path == nil && File.expand_path(dir) != '/' do
-    potential_config_path = File.expand_path('.logr', dir)
-    config_path = potential_config_path if File.exists?(potential_config_path)
-    dir = File.join(dir, '..')
-end
-
-raise "Could not find config, do you have a .logr file somewhere in the directory hierarchy?" unless config_path
-# ------------
-
-# Resolve known gems
-known_gem_locations = File.open(config_path) do |file|
-  Hash[
-    file.lines.map { |line| line.strip.split('=', 2) }
-  ]
-end
-# ------------
+config = LogRecursive::Config.new
+known_gem_locations = config.known_gems
 
 logs = []
 
