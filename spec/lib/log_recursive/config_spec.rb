@@ -14,7 +14,7 @@ describe LogRecursive::Config do
   describe :initialize do
     context 'when .logr config is not found' do
       subject do
-        described_class.new(Pathname.new(Dir.pwd).join('spec','fixtures'))
+        described_class.new(Dir.tmpdir())
       end
 
       it 'raises an exception' do

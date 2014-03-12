@@ -23,7 +23,16 @@ module LogRecursive
     end
 
     def config_path
-      path.join(".logr")
+      unless @config_path
+        dir = path
+        while @config_path == nil && File.expand_path(dir) != '/' do
+            potential_config_path = File.expand_path('.logr', dir)
+            @config_path = potential_config_path if File.exists?(potential_config_path)
+            dir = File.join(dir, '..')
+        end
+      end
+
+      @config_path
     end
 
     def config_exists?
